@@ -1,0 +1,11 @@
+/.vscode
+
+app/target
+
+# Terraform state files
+Terraform/*.tfstate
+Terraform/*.tfstate.backup
+
+
+# Local Terraform directories
+Terraform/.terraform/

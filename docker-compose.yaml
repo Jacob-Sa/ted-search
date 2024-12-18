@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  nginx:
+    image: nginx:stable-alpine3.20-perl
+    ports:
+      - 80:80 # Expose Nginx on port 80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./static/:/var/www/static/
+    networks:
+      - ted-network
+
+  ted-search:
+    image: us-central1-docker.pkg.dev/rapid-digit-439413-d7/ted-search-repo/ted_search:1.1-SNAPSHOT
+    container_name: ted-search
+    # environment:
+    #   - SPRING_CACHE_TYPE=memcached # Enable Memcached in the app
+    ports:
+      - 9191:9191 # Internal application port
+    # depends_on:
+    # - memcached
+    networks:
+      - ted-network
+networks:
+  ted-network:

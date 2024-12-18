@@ -1,0 +1,13 @@
+subnet                 = "subnet"
+region                 = "us-central1"
+network_name           = "custom-network"
+ip_cidr_range          = "10.0.1.0/24"
+account_id             = "svcaccount"
+insance_name           = "my-instance"
+instance_tags          = ["http-server"]
+image                  = "debian-cloud/debian-11"
+machine_type           = "e2-micro"
+service_account_scopes = ["cloud-platform"]
+zone                   = "us-central1-a"
+source_ranges           = ["0.0.0.0/0"]
+firewall_name           = "allow-http-inbound"
