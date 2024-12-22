@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn clean package' // Adjust for your build tool
+                sh 'mvn verify' // Adjust for your build tool
             }
         }
         stage('Test') {
