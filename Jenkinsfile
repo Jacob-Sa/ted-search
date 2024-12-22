@@ -3,6 +3,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                sh 'cd app'
                 sh 'mvn verify' // Adjust for your build tool
             }
         }
