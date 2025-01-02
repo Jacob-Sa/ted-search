@@ -3,11 +3,8 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                git url: 'https://github.com/cyrille-leclerc/multi-module-maven-project'
-                withMaven {
                     sh """cd app
                       mvn verify""" // Adjust for your build tool                }
-            }
         }
     }
         stage('Test') {
