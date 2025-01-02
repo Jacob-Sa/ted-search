@@ -3,9 +3,13 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn clean package' // Adjust for your build tool
+                git url: 'https://github.com/cyrille-leclerc/multi-module-maven-project'
+                withMaven {
+                    sh """cd app
+                      mvn verify""" // Adjust for your build tool                }
             }
         }
+    }
         stage('Test') {
             steps {
                 sh 'mvn test' // Run unit tests
@@ -17,5 +21,5 @@ pipeline {
                 sh 'docker push us-central1-docker.pkg.dev/rapid-digit-439413-d7/ted-search-repo/ted_search:1.1-SNAPSHOT'
             }
         }
-    }
+}
 }
