@@ -5,6 +5,6 @@ output "vpc_id" {
 
 output "subnet_id" {
   description = "The ID of the subnet"
-  value       = google_compute_subnetwork.custom-subnet.id
+  value       = google_compute_subnetwork.private_subnet.id
 }
 

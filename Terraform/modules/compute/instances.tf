@@ -34,6 +34,75 @@ resource "google_compute_instance" "instance" {
   }
 }
 
+
+# # Firewall rule to allow HTTP traffic to the private subnet
+# resource "google_compute_firewall" "allow-http" {
+#   name    = "allow-http"
+#   network =var.vpc_id
+
+#   allow {
+#     protocol = "tcp"
+#     ports    = ["80"]
+#   }
+
+#   source_ranges = ["0.0.0.0/0"]
+# }
+
+# Managed instance group for the private instance
+resource "google_compute_instance_group" "instance_group" {
+  name        = "private-instance-group"
+  zone        = "us-central1-a"
+  instances   = [google_compute_instance.instance.self_link]
+  named_port {
+    name = "http"
+    port = 80
+  }
+}
+
+# Health check for the load balancer
+resource "google_compute_health_check" "http_health_check" {
+  name = "http-health-check"
+
+  http_health_check {
+    port = 80
+  }
+}
+
+# Backend service for the load balancer
+resource "google_compute_backend_service" "backend_service" {
+  name                  = "http-backend-service"
+  health_checks         = [google_compute_health_check.http_health_check.self_link]
+  backend {
+    group = google_compute_instance_group.instance_group.self_link
+  }
+}
+
+# URL map for the load balancer
+resource "google_compute_url_map" "url_map" {
+  name            = "http-url-map"
+  default_service = google_compute_backend_service.backend_service.self_link
+}
+
+# HTTP proxy for the load balancer
+resource "google_compute_target_http_proxy" "http_proxy" {
+  name   = "http-proxy"
+  url_map = google_compute_url_map.url_map.self_link
+}
+
+# Reserve a global IP address for the load balancer
+resource "google_compute_global_address" "lb_ip" {
+  name = "http-lb-ip"
+}
+
+# Forwarding rule for the load balancer
+resource "google_compute_global_forwarding_rule" "http_forwarding_rule" {
+  name       = "http-forwarding-rule"
+  ip_address = google_compute_global_address.lb_ip.address
+  port_range = "80"
+  target     = google_compute_target_http_proxy.http_proxy.self_link
+}
+
+
 resource "google_compute_firewall" "allow_http_inbound" {
   name    = "${var.firewall_name}-${terraform.workspace}"
   network = var.vpc_id
